@@ -1,25 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { PokemonList } from './components';
-
-interface Pokemon {
-  id: number;
-  name: string;
-  image: string;
-}
+import { PokemonList, ScoreBoard } from './components';
+import { Pokemon } from './interface';
 
 const App = () => {
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
-  const NUMBER_OF_CARD = 8;
+  const [cardIndex, setCardIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  // const [time, setTime] = useState(0);
+  // const [isBallOpen, setBallOpen] = useState(false);
+  const NUMBER_OF_PAIR = 4;
 
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
+    // random a page number to get different pokemon
+    const randomNumb = Math.floor(Math.random() * 400);
 
     const getPokemons = async () => {
       try {
         const res = await axios.get(
-          'https://pokeapi.co/api/v2/pokemon?limit=4&offset=0',
+          `https://pokeapi.co/api/v2/pokemon?limit=${NUMBER_OF_PAIR}&offset=${randomNumb}`,
           { signal },
         );
 
@@ -49,25 +50,39 @@ const App = () => {
 
   // duplicate current pokemonList to create pairs and switch their index
   useEffect(() => {
-    let tempPokemonList: Pokemon[] = [];
-    let tempPokemonList2: Pokemon[] = [];
+    let duplicatedPokemonList: Pokemon[] = [];
+    let changedIndexPokemonList: Pokemon[] = [];
 
-    if (pokemonList.length === NUMBER_OF_CARD / 2) {
-      tempPokemonList = [...pokemonList, ...pokemonList];
-      while (tempPokemonList.length !== 0) {
-        const startIndex = Math.floor(Math.random() * tempPokemonList.length);
-        tempPokemonList2.push(tempPokemonList.splice(startIndex, 1)[0]);
+    if (pokemonList.length === NUMBER_OF_PAIR) {
+      duplicatedPokemonList = [...pokemonList, ...pokemonList];
+      while (duplicatedPokemonList.length !== 0) {
+        const startIndex = Math.floor(
+          Math.random() * duplicatedPokemonList.length,
+        );
+        changedIndexPokemonList.push(
+          duplicatedPokemonList.splice(startIndex, 1)[0],
+        );
       }
-      setPokemonList(tempPokemonList2);
+      setPokemonList(changedIndexPokemonList);
     }
   }, [pokemonList]);
+
+  console.log(cardIndex);
+  const getCardId = useCallback((id: number) => {
+    setCardIndex((preIndex) => {
+      if (preIndex === 0) return id;
+      if (preIndex === id) setScore((preScore) => preScore + 1);
+      return 0;
+    });
+  }, []);
 
   return (
     <div>
       <h1 className="text-center font-bold text-cyan-500">
         Memory Card Game - Version Pokemon
       </h1>
-      <PokemonList />
+      <ScoreBoard score={score} />
+      <PokemonList pokemonList={pokemonList} getCardId={getCardId} />
     </div>
   );
 };

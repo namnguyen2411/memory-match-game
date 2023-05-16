@@ -1,3 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .container {
+    @apply mx-auto w-[90%];
+  }
+  .card {
+    transform-style: preserve-3d;
+    @apply relative transition duration-300 ease-linear;
+  }
+  .front-card {
+    backface-visibility: hidden;
+    @apply absolute inset-0;
+  }
+
+  .back-card {
+    backface-visibility: hidden;
+    @apply rotate-y-180 absolute inset-0;
+  }
+}
+
+@layer utilities {
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+}
