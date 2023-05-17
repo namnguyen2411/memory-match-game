@@ -1,17 +1,37 @@
-import { Pokemon } from '@/interface';
+import { Pokemon, CardInfo } from '@/interface';
 import { PokemonCard } from '..';
 
 interface Props {
   pokemonList: Pokemon[];
-  getCardId: (id: number) => void;
+  selectedCards: CardInfo;
+  addSelectedCard: ({
+    pokemonId,
+    index,
+  }: {
+    pokemonId: number;
+    index: number;
+  }) => void;
+  correctPairs: number[];
 }
 
-const PokemonList = ({ pokemonList, getCardId }: Props) => {
+const PokemonList = ({
+  pokemonList,
+  selectedCards,
+  addSelectedCard,
+  correctPairs,
+}: Props) => {
   return (
-    <section>
-      <div className="grid grid-cols-6 gap-10 p-10">
+    <section className="mt-20">
+      <div className="grid grid-cols-6 gap-28">
         {pokemonList.map((pokemon: Pokemon, index) => (
-          <PokemonCard key={index} pokemon={pokemon} getCardId={getCardId} />
+          <PokemonCard
+            key={index}
+            pokemon={pokemon}
+            selectedCards={selectedCards}
+            addSelectedCard={addSelectedCard}
+            index={index}
+            correctPairs={correctPairs}
+          />
         ))}
       </div>
     </section>

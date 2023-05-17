@@ -1,15 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { PokemonList, ScoreBoard } from './components';
-import { Pokemon } from './interface';
+import { Pokemon, CardInfo } from './interface';
 
 const App = () => {
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
-  const [cardIndex, setCardIndex] = useState(0);
+  const [selectedCards, setSelectedCards] = useState<CardInfo>({
+    pokemonId: [],
+    index: [],
+  });
+  const [correctPairs, setCorrectPairs] = useState<number[]>([]);
+  const [isTransitionEnd, setTransitiondEnd] = useState(false);
   const [score, setScore] = useState(0);
   // const [time, setTime] = useState(0);
-  // const [isBallOpen, setBallOpen] = useState(false);
-  const NUMBER_OF_PAIR = 4;
+  const NUMBER_OF_PAIR = 2;
+
+  console.log('correctPairs', correctPairs);
+  console.log(selectedCards);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -67,22 +74,56 @@ const App = () => {
     }
   }, [pokemonList]);
 
-  console.log(cardIndex);
-  const getCardId = useCallback((id: number) => {
-    setCardIndex((preIndex) => {
-      if (preIndex === 0) return id;
-      if (preIndex === id) setScore((preScore) => preScore + 1);
-      return 0;
-    });
-  }, []);
+  useEffect(() => {
+    const { pokemonId, index } = selectedCards;
+    if (index.length === 2) {
+      console.warn('So sanh');
+      if (
+        pokemonId[pokemonId.length - 1] === pokemonId[pokemonId.length - 2] &&
+        index[index.length - 1] !== index[index.length - 2]
+      ) {
+        setScore((preScore) => preScore + 1);
+        setCorrectPairs((preIndex) => [
+          ...preIndex,
+          index[index.length - 1],
+          index[index.length - 2],
+        ]);
+      }
+      setSelectedCards({
+        pokemonId: [],
+        index: [],
+      });
+    }
+  }, [selectedCards]);
+
+  const addSelectedCard = useCallback(
+    ({ pokemonId, index }: { pokemonId: number; index: number }) => {
+      if (selectedCards.index.includes(index)) return;
+      setSelectedCards((preCards) => {
+        return {
+          pokemonId: [...preCards.pokemonId, pokemonId],
+          index: [...preCards.index, index],
+        };
+      });
+      // checkMatching();
+    },
+    [selectedCards],
+  );
 
   return (
-    <div>
-      <h1 className="text-center font-bold text-cyan-500">
-        Memory Card Game - Version Pokemon
-      </h1>
-      <ScoreBoard score={score} />
-      <PokemonList pokemonList={pokemonList} getCardId={getCardId} />
+    <div className="bg-slate-300">
+      <div className="container">
+        <h1 className="text-center font-bold text-cyan-500">
+          Memory Match Game - Version Pokemon
+        </h1>
+        <ScoreBoard score={score} />
+        <PokemonList
+          pokemonList={pokemonList}
+          selectedCards={selectedCards}
+          addSelectedCard={addSelectedCard}
+          correctPairs={correctPairs}
+        />
+      </div>
     </div>
   );
 };
