@@ -1,5 +1,5 @@
 import { Pokemon, CardInfo } from '@/interface';
-import { PokemonCard } from '..';
+import { PokeBall } from '..';
 
 interface Props {
   pokemonList: Pokemon[];
@@ -26,7 +26,7 @@ const PokemonList = ({
     <section className="mt-20">
       <div className="grid grid-cols-6 gap-28">
         {pokemonList.map((pokemon: Pokemon, index) => (
-          <PokemonCard
+          <PokeBall
             key={index}
             pokemon={pokemon}
             SelectedBalls={SelectedBalls}

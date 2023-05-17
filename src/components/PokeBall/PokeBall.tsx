@@ -14,7 +14,7 @@ interface Props {
   handleTransitionEnd: () => void;
 }
 
-const PokemonCard = ({
+const PokeBall = ({
   pokemon,
   SelectedBalls,
   addSelectedCard,
@@ -86,4 +86,4 @@ const PokemonCard = ({
   );
 };
 
-export default PokemonCard;
+export default PokeBall;
