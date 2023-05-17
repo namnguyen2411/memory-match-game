@@ -1,10 +1,8 @@
 import { Pokemon, CardInfo } from '@/interface';
-// import pokeCard from '../../assets/images/pokeCard.png';
-
 interface Props {
   pokemon: Pokemon;
   index: number;
-  selectedCards: CardInfo;
+  SelectedBalls: CardInfo;
   addSelectedCard: ({
     pokemonId,
     index,
@@ -13,14 +11,16 @@ interface Props {
     index: number;
   }) => void;
   correctPairs: number[];
+  handleTransitionEnd: () => void;
 }
 
 const PokemonCard = ({
   pokemon,
-  selectedCards,
+  SelectedBalls,
   addSelectedCard,
   index,
   correctPairs,
+  handleTransitionEnd,
 }: Props) => {
   const { id, name, image } = pokemon;
 
@@ -36,17 +36,18 @@ const PokemonCard = ({
         alt={name}
         style={{
           opacity:
-            selectedCards.index.includes(index) || correctPairs.includes(index)
+            SelectedBalls.index.includes(index) || correctPairs.includes(index)
               ? 1
               : 0,
         }}
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition duration-300"
       />
       <div
         className="z-10 flex h-[47%] items-end justify-center rounded-t-full bg-red-600 transition duration-300"
+        onTransitionEnd={handleTransitionEnd}
         style={{
           transform:
-            selectedCards.index.includes(index) || correctPairs.includes(index)
+            SelectedBalls.index.includes(index) || correctPairs.includes(index)
               ? 'translateY(-60%)'
               : '',
         }}
@@ -59,11 +60,11 @@ const PokemonCard = ({
       <div
         style={{
           opacity:
-            selectedCards.index.includes(index) || correctPairs.includes(index)
+            SelectedBalls.index.includes(index) || correctPairs.includes(index)
               ? 0
               : 1,
         }}
-        className="mx-auto flex h-[6%] w-[95%] items-center justify-center bg-black transition duration-500"
+        className="mx-auto flex h-[6%] w-[95%] items-center justify-center bg-black transition duration-300"
       >
         <div className="flex aspect-square h-12 items-center justify-center rounded-full bg-black">
           <div className="flex aspect-square h-8 items-center justify-center rounded-full bg-white">
@@ -76,7 +77,7 @@ const PokemonCard = ({
         className="h-[47%] rounded-b-full bg-white transition duration-300"
         style={{
           transform:
-            selectedCards.index.includes(index) || correctPairs.includes(index)
+            SelectedBalls.index.includes(index) || correctPairs.includes(index)
               ? 'translateY(60%)'
               : '',
         }}

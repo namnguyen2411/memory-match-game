@@ -5,7 +5,7 @@ import { Pokemon, CardInfo } from './interface';
 
 const App = () => {
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
-  const [selectedCards, setSelectedCards] = useState<CardInfo>({
+  const [SelectedBalls, setSelectedBalls] = useState<CardInfo>({
     pokemonId: [],
     index: [],
   });
@@ -13,10 +13,7 @@ const App = () => {
   const [isTransitionEnd, setTransitiondEnd] = useState(false);
   const [score, setScore] = useState(0);
   // const [time, setTime] = useState(0);
-  const NUMBER_OF_PAIR = 2;
-
-  console.log('correctPairs', correctPairs);
-  console.log(selectedCards);
+  const NUMBER_OF_PAIR = 6;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -75,9 +72,8 @@ const App = () => {
   }, [pokemonList]);
 
   useEffect(() => {
-    const { pokemonId, index } = selectedCards;
+    const { pokemonId, index } = SelectedBalls;
     if (index.length === 2) {
-      console.warn('So sanh');
       if (
         pokemonId[pokemonId.length - 1] === pokemonId[pokemonId.length - 2] &&
         index[index.length - 1] !== index[index.length - 2]
@@ -89,25 +85,29 @@ const App = () => {
           index[index.length - 2],
         ]);
       }
-      setSelectedCards({
+      setSelectedBalls({
         pokemonId: [],
         index: [],
       });
     }
-  }, [selectedCards]);
+    setTransitiondEnd(false);
+  }, [isTransitionEnd]);
+
+  const handleTransitionEnd = () => {
+    setTransitiondEnd(true);
+  };
 
   const addSelectedCard = useCallback(
     ({ pokemonId, index }: { pokemonId: number; index: number }) => {
-      if (selectedCards.index.includes(index)) return;
-      setSelectedCards((preCards) => {
+      if (SelectedBalls.index.includes(index)) return;
+      setSelectedBalls((preCards) => {
         return {
           pokemonId: [...preCards.pokemonId, pokemonId],
           index: [...preCards.index, index],
         };
       });
-      // checkMatching();
     },
-    [selectedCards],
+    [SelectedBalls],
   );
 
   return (
@@ -119,9 +119,10 @@ const App = () => {
         <ScoreBoard score={score} />
         <PokemonList
           pokemonList={pokemonList}
-          selectedCards={selectedCards}
+          SelectedBalls={SelectedBalls}
           addSelectedCard={addSelectedCard}
           correctPairs={correctPairs}
+          handleTransitionEnd={handleTransitionEnd}
         />
       </div>
     </div>

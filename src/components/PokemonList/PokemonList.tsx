@@ -3,7 +3,7 @@ import { PokemonCard } from '..';
 
 interface Props {
   pokemonList: Pokemon[];
-  selectedCards: CardInfo;
+  SelectedBalls: CardInfo;
   addSelectedCard: ({
     pokemonId,
     index,
@@ -12,13 +12,15 @@ interface Props {
     index: number;
   }) => void;
   correctPairs: number[];
+  handleTransitionEnd: () => void;
 }
 
 const PokemonList = ({
   pokemonList,
-  selectedCards,
+  SelectedBalls,
   addSelectedCard,
   correctPairs,
+  handleTransitionEnd,
 }: Props) => {
   return (
     <section className="mt-20">
@@ -27,10 +29,11 @@ const PokemonList = ({
           <PokemonCard
             key={index}
             pokemon={pokemon}
-            selectedCards={selectedCards}
+            SelectedBalls={SelectedBalls}
             addSelectedCard={addSelectedCard}
             index={index}
             correctPairs={correctPairs}
+            handleTransitionEnd={handleTransitionEnd}
           />
         ))}
       </div>
