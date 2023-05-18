@@ -4,7 +4,7 @@ import { PokemonList, ScoreBoard } from './components';
 import { Pokemon, CardInfo } from './interface';
 
 const App = () => {
-  const TIME = 180;
+  const TIME_IN_SECOND = 180;
   const NUMBER_OF_PAIR = 2;
 
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
@@ -15,7 +15,7 @@ const App = () => {
   const [correctPairs, setCorrectPairs] = useState<number[][]>([]);
   const [isTransitionEnd, setTransitiondEnd] = useState(false);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(TIME);
+  const [timeLeft, setTimeLeft] = useState(TIME_IN_SECOND);
   const [newGame, setNewGame] = useState(0);
 
   const gameEnded = score === NUMBER_OF_PAIR || timeLeft === 0;
@@ -114,13 +114,27 @@ const App = () => {
     [SelectedBalls],
   );
 
-  const handlePlayAgain = () => {
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft((preTimeLeft) => {
+        if (preTimeLeft !== 0) return preTimeLeft - 1;
+        clearInterval(interval);
+        return 0;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [newGame]);
+
+  const handlePlayAgain = useCallback(() => {
     setScore(0);
-    setTimeLeft(TIME);
+    setTimeLeft(TIME_IN_SECOND);
     setPokemonList([]);
     setCorrectPairs([]);
     setNewGame((pre) => pre + 1);
-  };
+  }, []);
 
   return (
     <div className="relative bg-slate-300">

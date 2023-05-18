@@ -24,7 +24,7 @@ const PokemonList = ({
 }: Props) => {
   return (
     <section className="mt-20">
-      <div className="grid grid-cols-6 gap-28">
+      <div className="grid grid-cols-6 place-items-center gap-28">
         {pokemonList.map((pokemon: Pokemon, index) => (
           <PokeBall
             key={index}
