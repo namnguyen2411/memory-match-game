@@ -4,7 +4,7 @@ import { PokemonList, ScoreBoard } from './components';
 import { Pokemon, CardInfo } from './interface';
 
 const App = () => {
-  const TIME_IN_SECOND = 180;
+  const TIME_IN_SECOND = 10;
   const NUMBER_OF_PAIR = 2;
 
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
@@ -123,10 +123,12 @@ const App = () => {
       });
     }, 1000);
 
+    if (gameEnded) clearInterval(interval);
+
     return () => {
       clearInterval(interval);
     };
-  }, [newGame]);
+  }, [newGame, gameEnded]);
 
   const handlePlayAgain = useCallback(() => {
     setScore(0);
