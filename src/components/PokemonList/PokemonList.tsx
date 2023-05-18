@@ -23,8 +23,8 @@ const PokemonList = ({
   handleTransitionEnd,
 }: Props) => {
   return (
-    <section className="mt-20">
-      <div className="grid grid-cols-6 place-items-center gap-28">
+    <section className="mt-16">
+      <div className="grid grid-cols-6 place-items-center gap-24">
         {pokemonList.map((pokemon: Pokemon, index) => (
           <PokeBall
             key={index}

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { PokemonList, ScoreBoard } from './components';
+import { PokemonList, ScoreBoard, GameEndedModal } from './components';
 import { Pokemon, CardInfo } from './interface';
 
 const App = () => {
-  const TIME_IN_SECOND = 10;
-  const NUMBER_OF_PAIR = 2;
+  const TIME_IN_SECOND = 180;
+  const NUMBER_OF_PAIR = 11;
 
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
   const [SelectedBalls, setSelectedBalls] = useState<CardInfo>({
@@ -13,7 +13,9 @@ const App = () => {
     index: [],
   });
   const [correctPairs, setCorrectPairs] = useState<number[][]>([]);
-  const [isTransitionEnd, setTransitiondEnd] = useState(false);
+  const [isTransitionEnd, setTransitiondEnd] = useState({
+    status: false,
+  });
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(TIME_IN_SECOND);
   const [newGame, setNewGame] = useState(0);
@@ -24,12 +26,12 @@ const App = () => {
     const controller = new AbortController();
     const signal = controller.signal;
     // random a page number to get different pokemon
-    const randomNumb = Math.floor(Math.random() * 400);
+    const randomNumber = Math.floor(Math.random() * 400);
 
     const getPokemons = async () => {
       try {
         const res = await axios.get(
-          `https://pokeapi.co/api/v2/pokemon?limit=${NUMBER_OF_PAIR}&offset=${randomNumb}`,
+          `https://pokeapi.co/api/v2/pokemon?limit=${NUMBER_OF_PAIR}&offset=${randomNumber}`,
           { signal },
         );
 
@@ -94,11 +96,10 @@ const App = () => {
         index: [],
       });
     }
-    setTransitiondEnd(false);
   }, [isTransitionEnd]);
 
   const handleTransitionEnd = useCallback(() => {
-    setTransitiondEnd(true);
+    setTransitiondEnd({ status: true });
   }, []);
 
   const addSelectedCard = useCallback(
@@ -139,11 +140,8 @@ const App = () => {
   }, []);
 
   return (
-    <div className="relative bg-slate-300">
+    <div className="relative bg-slate300">
       <div className="container">
-        <h1 className="text-center font-bold text-cyan-500">
-          Memory Match Game - Pokémon Version
-        </h1>
         <ScoreBoard score={score} timeLeft={timeLeft} />
         <PokemonList
           pokemonList={pokemonList}
@@ -152,29 +150,12 @@ const App = () => {
           correctPairs={correctPairs}
           handleTransitionEnd={handleTransitionEnd}
         />
-
         {gameEnded && (
-          <div className="fixed left-0 top-0 h-screen w-screen backdrop-blur-[1px]">
-            <div className="absolute left-1/2 top-1/2 h-[400px] w-[300px] -translate-x-1/2 -translate-y-1/2 border-2 p-10 ">
-              <div className="flex h-full flex-col justify-around">
-                <p>
-                  Points: <span className="float-right">{score}</span>
-                </p>
-                <p>
-                  Time left: <span className="float-right">{timeLeft}</span>
-                </p>
-                <p>
-                  Total: <span className="float-right">{timeLeft + score}</span>
-                </p>
-                <button
-                  onClick={handlePlayAgain}
-                  className="mx-auto block cursor-pointer border-2 bg-red-300 px-4 py-2"
-                >
-                  Play Again
-                </button>
-              </div>
-            </div>
-          </div>
+          <GameEndedModal
+            score={score}
+            timeLeft={timeLeft}
+            handlePlayAgain={handlePlayAgain}
+          />
         )}
       </div>
     </div>

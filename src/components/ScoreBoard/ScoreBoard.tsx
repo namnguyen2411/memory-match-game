@@ -5,15 +5,17 @@ interface Props {
 
 const ScoreBoard = ({ score, timeLeft }: Props) => {
   return (
-    <section className="mt-16">
-      <div className="flex items-center justify-center gap-80">
-        <div className="item-center flex gap-10 border-2 border-red-200">
-          <p>TIME: </p>
-          <p>{timeLeft} s</p>
+    <section className="pt-4">
+      <div className="flex items-center justify-evenly gap-40">
+        <div className="item-center flex rounded-2xl bg-black px-4 py-2 font-bold text-white">
+          <p>
+            TIME <span className="ml-10">{timeLeft} s</span>
+          </p>
         </div>
-        <div className="item-center flex gap-10 border-2 border-red-200">
-          <p>POINTS: </p>
-          <p>{score}</p>
+        <div className="item-center flex rounded-2xl bg-black px-4 py-2 font-bold text-white">
+          <p>
+            POINTS <span className="ml-10">{score}</span>
+          </p>
         </div>
       </div>
     </section>

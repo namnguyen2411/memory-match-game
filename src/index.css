@@ -4,9 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  p {
+    font-size: 20px;
+  }
+}
+
 @layer components {
   .container {
-    @apply mx-auto h-screen w-[96%];
+    @apply mx-auto h-screen max-w-screen-xl;
   }
 }
 
