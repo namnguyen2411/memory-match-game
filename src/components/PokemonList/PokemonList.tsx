@@ -11,7 +11,7 @@ interface Props {
     pokemonId: number;
     index: number;
   }) => void;
-  correctPairs: number[];
+  correctPairs: number[][];
   handleTransitionEnd: () => void;
 }
 

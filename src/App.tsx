@@ -4,16 +4,21 @@ import { PokemonList, ScoreBoard } from './components';
 import { Pokemon, CardInfo } from './interface';
 
 const App = () => {
+  const TIME = 180;
+  const NUMBER_OF_PAIR = 2;
+
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
   const [SelectedBalls, setSelectedBalls] = useState<CardInfo>({
     pokemonId: [],
     index: [],
   });
-  const [correctPairs, setCorrectPairs] = useState<number[]>([]);
+  const [correctPairs, setCorrectPairs] = useState<number[][]>([]);
   const [isTransitionEnd, setTransitiondEnd] = useState(false);
   const [score, setScore] = useState(0);
-  // const [time, setTime] = useState(0);
-  const NUMBER_OF_PAIR = 6;
+  const [timeLeft, setTimeLeft] = useState(TIME);
+  const [newGame, setNewGame] = useState(0);
+
+  const gameEnded = score === NUMBER_OF_PAIR || timeLeft === 0;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -50,7 +55,7 @@ const App = () => {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [newGame]);
 
   // duplicate current pokemonList to create pairs and switch their index
   useEffect(() => {
@@ -79,10 +84,9 @@ const App = () => {
         index[index.length - 1] !== index[index.length - 2]
       ) {
         setScore((preScore) => preScore + 1);
-        setCorrectPairs((preIndex) => [
-          ...preIndex,
-          index[index.length - 1],
-          index[index.length - 2],
+        setCorrectPairs((prePairs) => [
+          ...prePairs,
+          [index[index.length - 1], index[index.length - 2]],
         ]);
       }
       setSelectedBalls({
@@ -93,9 +97,9 @@ const App = () => {
     setTransitiondEnd(false);
   }, [isTransitionEnd]);
 
-  const handleTransitionEnd = () => {
+  const handleTransitionEnd = useCallback(() => {
     setTransitiondEnd(true);
-  };
+  }, []);
 
   const addSelectedCard = useCallback(
     ({ pokemonId, index }: { pokemonId: number; index: number }) => {
@@ -110,13 +114,21 @@ const App = () => {
     [SelectedBalls],
   );
 
+  const handlePlayAgain = () => {
+    setScore(0);
+    setTimeLeft(TIME);
+    setPokemonList([]);
+    setCorrectPairs([]);
+    setNewGame((pre) => pre + 1);
+  };
+
   return (
-    <div className="bg-slate-300">
+    <div className="relative bg-slate-300">
       <div className="container">
         <h1 className="text-center font-bold text-cyan-500">
-          Memory Match Game - Version Pokemon
+          Memory Match Game - Pokémon Version
         </h1>
-        <ScoreBoard score={score} />
+        <ScoreBoard score={score} timeLeft={timeLeft} />
         <PokemonList
           pokemonList={pokemonList}
           SelectedBalls={SelectedBalls}
@@ -124,6 +136,30 @@ const App = () => {
           correctPairs={correctPairs}
           handleTransitionEnd={handleTransitionEnd}
         />
+
+        {gameEnded && (
+          <div className="fixed left-0 top-0 h-screen w-screen backdrop-blur-[1px]">
+            <div className="absolute left-1/2 top-1/2 h-[400px] w-[300px] -translate-x-1/2 -translate-y-1/2 border-2 p-10 ">
+              <div className="flex h-full flex-col justify-around">
+                <p>
+                  Points: <span className="float-right">{score}</span>
+                </p>
+                <p>
+                  Time left: <span className="float-right">{timeLeft}</span>
+                </p>
+                <p>
+                  Total: <span className="float-right">{timeLeft + score}</span>
+                </p>
+                <button
+                  onClick={handlePlayAgain}
+                  className="mx-auto block cursor-pointer border-2 bg-red-300 px-4 py-2"
+                >
+                  Play Again
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

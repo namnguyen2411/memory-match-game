@@ -10,7 +10,7 @@ interface Props {
     pokemonId: number;
     index: number;
   }) => void;
-  correctPairs: number[];
+  correctPairs: number[][];
   handleTransitionEnd: () => void;
 }
 
@@ -26,7 +26,7 @@ const PokeBall = ({
 
   return (
     <div
-      className="pokeball relative col-span-1 aspect-square h-36 cursor-pointer rounded-full"
+      className="pokeball relative col-span-1 aspect-square h-28 cursor-pointer rounded-full"
       onClick={() => {
         addSelectedCard({ pokemonId: id, index });
       }}
@@ -36,7 +36,8 @@ const PokeBall = ({
         alt={name}
         style={{
           opacity:
-            SelectedBalls.index.includes(index) || correctPairs.includes(index)
+            SelectedBalls.index.includes(index) ||
+            correctPairs.flat().includes(index)
               ? 1
               : 0,
         }}
@@ -47,8 +48,9 @@ const PokeBall = ({
         onTransitionEnd={handleTransitionEnd}
         style={{
           transform:
-            SelectedBalls.index.includes(index) || correctPairs.includes(index)
-              ? 'translateY(-60%)'
+            SelectedBalls.index.includes(index) ||
+            correctPairs.flat().includes(index)
+              ? 'translateY(-75%)'
               : '',
         }}
       >
@@ -60,7 +62,8 @@ const PokeBall = ({
       <div
         style={{
           opacity:
-            SelectedBalls.index.includes(index) || correctPairs.includes(index)
+            SelectedBalls.index.includes(index) ||
+            correctPairs.flat().includes(index)
               ? 0
               : 1,
         }}
@@ -77,8 +80,9 @@ const PokeBall = ({
         className="h-[47%] rounded-b-full bg-white transition duration-300"
         style={{
           transform:
-            SelectedBalls.index.includes(index) || correctPairs.includes(index)
-              ? 'translateY(60%)'
+            SelectedBalls.index.includes(index) ||
+            correctPairs.flat().includes(index)
+              ? 'translateY(75%)'
               : '',
         }}
       ></div>
