@@ -1,12 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { PokemonList, ScoreBoard, GameEndedModal } from './components';
+import {
+  HomePage,
+  PokemonList,
+  ScoreBoard,
+  GameEndedModal,
+} from './components';
 import { Pokemon, CardInfo } from './interface';
 
 const App = () => {
-  const TIME_IN_SECOND = 180;
+  const TIME_IN_SECOND = 120;
   const NUMBER_OF_PAIR = 11;
-
+  const [gameStarted, setGameStarted] = useState(false);
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
   const [SelectedBalls, setSelectedBalls] = useState<CardInfo>({
     pokemonId: [],
@@ -19,14 +24,13 @@ const App = () => {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(TIME_IN_SECOND);
   const [newGame, setNewGame] = useState(0);
-
   const gameEnded = score === NUMBER_OF_PAIR || timeLeft === 0;
 
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-    // random a page number to get different pokemon
     const randomNumber = Math.floor(Math.random() * 400);
+    // random a page number to get different pokemon
 
     const getPokemons = async () => {
       try {
@@ -53,10 +57,7 @@ const App = () => {
       }
     };
     getPokemons();
-
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, [newGame]);
 
   // duplicate current pokemonList to create pairs and switch their index
@@ -78,6 +79,42 @@ const App = () => {
     }
   }, [pokemonList]);
 
+  // countdown timer
+  useEffect(() => {
+    if (!gameStarted) return;
+
+    const interval = setInterval(() => {
+      setTimeLeft((preTimeLeft) => {
+        if (preTimeLeft !== 0) return preTimeLeft - 1;
+        clearInterval(interval);
+        return 0;
+      });
+    }, 1000);
+
+    if (gameEnded) clearInterval(interval);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [gameStarted, gameEnded, newGame]);
+
+  const addSelectedCard = useCallback(
+    ({ pokemonId, index }: { pokemonId: number; index: number }) => {
+      if (SelectedBalls.index.includes(index)) return;
+      setSelectedBalls((preCards) => {
+        return {
+          pokemonId: [...preCards.pokemonId, pokemonId],
+          index: [...preCards.index, index],
+        };
+      });
+    },
+    [SelectedBalls],
+  );
+
+  const handleTransitionEnd = useCallback(() => {
+    setTransitiondEnd({ status: true });
+  }, []);
+
   useEffect(() => {
     const { pokemonId, index } = SelectedBalls;
     if (index.length === 2) {
@@ -98,39 +135,6 @@ const App = () => {
     }
   }, [isTransitionEnd]);
 
-  const handleTransitionEnd = useCallback(() => {
-    setTransitiondEnd({ status: true });
-  }, []);
-
-  const addSelectedCard = useCallback(
-    ({ pokemonId, index }: { pokemonId: number; index: number }) => {
-      if (SelectedBalls.index.includes(index)) return;
-      setSelectedBalls((preCards) => {
-        return {
-          pokemonId: [...preCards.pokemonId, pokemonId],
-          index: [...preCards.index, index],
-        };
-      });
-    },
-    [SelectedBalls],
-  );
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft((preTimeLeft) => {
-        if (preTimeLeft !== 0) return preTimeLeft - 1;
-        clearInterval(interval);
-        return 0;
-      });
-    }, 1000);
-
-    if (gameEnded) clearInterval(interval);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [newGame, gameEnded]);
-
   const handlePlayAgain = useCallback(() => {
     setScore(0);
     setTimeLeft(TIME_IN_SECOND);
@@ -141,23 +145,30 @@ const App = () => {
 
   return (
     <div className="relative bg-slate300">
-      <div className="container">
-        <ScoreBoard score={score} timeLeft={timeLeft} />
-        <PokemonList
-          pokemonList={pokemonList}
-          SelectedBalls={SelectedBalls}
-          addSelectedCard={addSelectedCard}
-          correctPairs={correctPairs}
-          handleTransitionEnd={handleTransitionEnd}
-        />
-        {gameEnded && (
-          <GameEndedModal
-            score={score}
-            timeLeft={timeLeft}
-            handlePlayAgain={handlePlayAgain}
-          />
-        )}
-      </div>
+      {gameStarted ? (
+        <>
+          <div className="container">
+            <ScoreBoard score={score} timeLeft={timeLeft} />
+            <PokemonList
+              pokemonList={pokemonList}
+              SelectedBalls={SelectedBalls}
+              addSelectedCard={addSelectedCard}
+              correctPairs={correctPairs}
+              handleTransitionEnd={handleTransitionEnd}
+            />
+            {gameEnded && (
+              <GameEndedModal
+                score={score}
+                timeLeft={timeLeft}
+                handlePlayAgain={handlePlayAgain}
+                setGameStarted={setGameStarted}
+              />
+            )}
+          </div>
+        </>
+      ) : (
+        <HomePage setGameStarted={setGameStarted} />
+      )}
     </div>
   );
 };

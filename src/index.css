@@ -5,8 +5,11 @@
 @tailwind utilities;
 
 @layer base {
+  h1 {
+    @apply text-7xl font-bold;
+  }
   p {
-    font-size: 20px;
+    @apply text-xl;
   }
 }
 
@@ -17,4 +20,9 @@
 }
 
 @layer utilities {
+  .glowing {
+    color: #fff;
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #fff, 0 0 80px #fff,
+      0 0 120px #fff;
+  }
 }
