@@ -1,17 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import {
-  HomePage,
-  PokemonList,
-  ScoreBoard,
-  GameEndedModal,
-} from './components';
+import { HomePage, PokeBall, ScoreBoard, Modal } from './components';
 import { Pokemon, CardInfo } from './interface';
+
+interface KeyboardEvent {
+  key: string;
+  code: string;
+}
 
 const App = () => {
   const TIME_IN_SECOND = 120;
-  const NUMBER_OF_PAIR = 11;
+  const NUMBER_OF_PAIR = 12;
   const [gameStarted, setGameStarted] = useState(false);
+  const [isGamePaused, setGamePause] = useState(false);
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
   const [SelectedBalls, setSelectedBalls] = useState<CardInfo>({
     pokemonId: [],
@@ -29,8 +30,8 @@ const App = () => {
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
+    // random a number to get different pokemons
     const randomNumber = Math.floor(Math.random() * 400);
-    // random a page number to get different pokemon
 
     const getPokemons = async () => {
       try {
@@ -91,12 +92,12 @@ const App = () => {
       });
     }, 1000);
 
-    if (gameEnded) clearInterval(interval);
+    if (gameEnded || isGamePaused) clearInterval(interval);
 
     return () => {
       clearInterval(interval);
     };
-  }, [gameStarted, gameEnded, newGame]);
+  }, [gameStarted, isGamePaused, gameEnded]);
 
   const addSelectedCard = useCallback(
     ({ pokemonId, index }: { pokemonId: number; index: number }) => {
@@ -143,23 +144,44 @@ const App = () => {
     setNewGame((pre) => pre + 1);
   }, []);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || gameEnded || gameStarted === false) return;
+      setGamePause(!isGamePaused);
+    };
+
+    document.addEventListener('keyup', handler);
+    return () => document.removeEventListener('keyup', handler);
+  }, [gameStarted, gameEnded, isGamePaused]);
+
+  console.count('app');
   return (
     <div className="relative bg-slate300">
       {gameStarted ? (
         <>
           <div className="container">
             <ScoreBoard score={score} timeLeft={timeLeft} />
-            <PokemonList
-              pokemonList={pokemonList}
-              SelectedBalls={SelectedBalls}
-              addSelectedCard={addSelectedCard}
-              correctPairs={correctPairs}
-              handleTransitionEnd={handleTransitionEnd}
-            />
-            {gameEnded && (
-              <GameEndedModal
+            <section className="mt-20">
+              <div className="grid grid-cols-6 place-items-center gap-24">
+                {pokemonList.map((pokemon: Pokemon, index) => (
+                  <PokeBall
+                    key={index}
+                    pokemon={pokemon}
+                    SelectedBalls={SelectedBalls}
+                    addSelectedCard={addSelectedCard}
+                    index={index}
+                    correctPairs={correctPairs}
+                    handleTransitionEnd={handleTransitionEnd}
+                  />
+                ))}
+              </div>
+            </section>
+            {(isGamePaused || gameEnded) && (
+              <Modal
                 score={score}
                 timeLeft={timeLeft}
+                isGamePaused={isGamePaused}
+                setGamePause={setGamePause}
                 handlePlayAgain={handlePlayAgain}
                 setGameStarted={setGameStarted}
               />

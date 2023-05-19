@@ -18,7 +18,7 @@ module.exports = {
       },
       animation: {
         'spin-slow': 'spin 2s linear infinite',
-        fade: 'fade .3s linear forwards',
+        fade: 'fade .2s linear forwards',
       },
     },
   },

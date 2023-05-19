@@ -7,6 +7,7 @@
 @layer base {
   h1 {
     @apply text-7xl font-bold;
+    text-shadow: 1px 1px 5px currentColor;
   }
   p {
     @apply text-xl;
@@ -21,8 +22,7 @@
 
 @layer utilities {
   .glowing {
-    color: #fff;
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #fff, 0 0 80px #fff,
-      0 0 120px #fff;
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor,
+      0 0 40px currentColor, 0 0 80px currentColor, 0 0 120px currentColor;
   }
 }
