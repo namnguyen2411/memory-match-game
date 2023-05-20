@@ -5,6 +5,9 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    @apply font-poppins;
+  }
   h1 {
     @apply text-7xl font-bold;
     text-shadow: 1px 1px 5px currentColor;
@@ -16,7 +19,7 @@
 
 @layer components {
   .container {
-    @apply mx-auto min-h-screen max-w-screen-xl;
+    @apply mx-auto min-h-screen max-w-screen-xl py-5;
   }
 }
 

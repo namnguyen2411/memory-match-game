@@ -27,15 +27,15 @@ const Modal = ({
           <p>
             TIME LEFT <span className="float-right">{timeLeft}</span>
           </p>
-          <p>
+          <p className="glowing">
             TOTAL
-            <span className="float-right text-primary">{timeLeft + score}</span>
+            <span className="float-right">{timeLeft + score}</span>
           </p>
           <div className="item-center flex justify-between text-lg">
             {isGamePaused ? (
               <button
                 onClick={() => setGamePause(false)}
-                className="mx-auto cursor-pointer rounded-2xl border-2 bg-white px-4 py-2 text-primary shadow-sm shadow-white"
+                className="mx-auto cursor-pointer rounded-2xl border-2 bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
               >
                 Resume
               </button>
@@ -43,7 +43,7 @@ const Modal = ({
               <>
                 <button
                   onClick={handlePlayAgain}
-                  className="cursor-pointer rounded-2xl border-2 bg-white px-4 py-2 text-primary shadow-sm shadow-white"
+                  className="cursor-pointer rounded-2xl border-2 bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
                 >
                   Play Again
                 </button>
@@ -52,7 +52,7 @@ const Modal = ({
                     handlePlayAgain();
                     setGameStarted(false);
                   }}
-                  className="cursor-pointer rounded-2xl border-2 bg-white px-4 py-2 text-primary shadow-sm shadow-white"
+                  className="cursor-pointer rounded-2xl border-2 bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
                 >
                   Quit Game
                 </button>

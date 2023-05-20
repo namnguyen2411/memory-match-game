@@ -45,7 +45,7 @@ const PokeBall = ({
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition duration-300"
       />
       <div
-        className={`z-10 flex h-[47%] items-end justify-center rounded-t-full bg-primary transition duration-300${
+        className={`z-10 flex h-[47%] items-end justify-center rounded-t-full bg-red600 transition duration-300${
           correctPairs.flat().includes(index) ? ' animate-fade' : ''
         }`}
         onTransitionEnd={handleTransitionEnd}

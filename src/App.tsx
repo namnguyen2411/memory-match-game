@@ -164,7 +164,6 @@ const App = () => {
     return () => document.removeEventListener('keyup', handler);
   }, [gameStarted, gameEnded, isGamePaused]);
 
-  console.log(pokemonList.length);
   console.count('app');
   return (
     <div className="relative bg-slate300">
@@ -173,8 +172,8 @@ const App = () => {
           {pokemonList.length === NUMBER_OF_PAIR * 2 ? (
             <div className="container">
               <ScoreBoard score={score} timeLeft={timeLeft} />
-              <section className="mt-20 pb-10">
-                <div className="grid grid-cols-6 place-items-center gap-24">
+              <section className="mt-16 pb-10">
+                <div className="grid grid-cols-5 place-items-center gap-[90px]">
                   {pokemonList.map((pokemon: Pokemon, index) => (
                     <PokeBall
                       key={index}

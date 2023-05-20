@@ -7,7 +7,8 @@ module.exports = {
       },
       colors: {
         slate300: '#94a3b8',
-        primary: '#dc2626',
+        red600: '#dc2626',
+        cyan400: '#22d3ee',
       },
       keyframes: {
         fade: {
