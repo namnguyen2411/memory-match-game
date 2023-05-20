@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { HomePage, PokeBall, ScoreBoard, Modal } from './components';
+import {
+  HomePage,
+  PokeBall,
+  ScoreBoard,
+  Modal,
+  LoadingModal,
+} from './components';
 import { Pokemon, CardInfo } from './interface';
 
 interface KeyboardEvent {
@@ -9,8 +15,8 @@ interface KeyboardEvent {
 }
 
 const App = () => {
-  const TIME_IN_SECOND = 120;
-  const NUMBER_OF_PAIR = 12;
+  const TIME_IN_SECOND = 90;
+  const NUMBER_OF_PAIR = 9;
   const [gameStarted, setGameStarted] = useState(false);
   const [isGamePaused, setGamePause] = useState(false);
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
@@ -140,6 +146,10 @@ const App = () => {
     setScore(0);
     setTimeLeft(TIME_IN_SECOND);
     setPokemonList([]);
+    setSelectedBalls({
+      pokemonId: [],
+      index: [],
+    });
     setCorrectPairs([]);
     setNewGame((pre) => pre + 1);
   }, []);
@@ -154,39 +164,44 @@ const App = () => {
     return () => document.removeEventListener('keyup', handler);
   }, [gameStarted, gameEnded, isGamePaused]);
 
+  console.log(pokemonList.length);
   console.count('app');
   return (
     <div className="relative bg-slate300">
       {gameStarted ? (
         <>
-          <div className="container">
-            <ScoreBoard score={score} timeLeft={timeLeft} />
-            <section className="mt-20">
-              <div className="grid grid-cols-6 place-items-center gap-24">
-                {pokemonList.map((pokemon: Pokemon, index) => (
-                  <PokeBall
-                    key={index}
-                    pokemon={pokemon}
-                    SelectedBalls={SelectedBalls}
-                    addSelectedCard={addSelectedCard}
-                    index={index}
-                    correctPairs={correctPairs}
-                    handleTransitionEnd={handleTransitionEnd}
-                  />
-                ))}
-              </div>
-            </section>
-            {(isGamePaused || gameEnded) && (
-              <Modal
-                score={score}
-                timeLeft={timeLeft}
-                isGamePaused={isGamePaused}
-                setGamePause={setGamePause}
-                handlePlayAgain={handlePlayAgain}
-                setGameStarted={setGameStarted}
-              />
-            )}
-          </div>
+          {pokemonList.length === NUMBER_OF_PAIR * 2 ? (
+            <div className="container">
+              <ScoreBoard score={score} timeLeft={timeLeft} />
+              <section className="mt-20 pb-10">
+                <div className="grid grid-cols-6 place-items-center gap-24">
+                  {pokemonList.map((pokemon: Pokemon, index) => (
+                    <PokeBall
+                      key={index}
+                      pokemon={pokemon}
+                      SelectedBalls={SelectedBalls}
+                      addSelectedCard={addSelectedCard}
+                      index={index}
+                      correctPairs={correctPairs}
+                      handleTransitionEnd={handleTransitionEnd}
+                    />
+                  ))}
+                </div>
+              </section>
+              {(isGamePaused || gameEnded) && (
+                <Modal
+                  score={score}
+                  timeLeft={timeLeft}
+                  isGamePaused={isGamePaused}
+                  setGamePause={setGamePause}
+                  handlePlayAgain={handlePlayAgain}
+                  setGameStarted={setGameStarted}
+                />
+              )}
+            </div>
+          ) : (
+            <LoadingModal />
+          )}
         </>
       ) : (
         <HomePage setGameStarted={setGameStarted} />

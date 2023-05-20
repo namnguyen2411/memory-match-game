@@ -48,7 +48,10 @@ const Modal = ({
                   Play Again
                 </button>
                 <button
-                  onClick={() => setGameStarted(false)}
+                  onClick={() => {
+                    handlePlayAgain();
+                    setGameStarted(false);
+                  }}
                   className="cursor-pointer rounded-2xl border-2 bg-white px-4 py-2 text-primary shadow-sm shadow-white"
                 >
                   Quit Game
