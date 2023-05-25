@@ -1,11 +1,12 @@
+import { memo } from 'react';
 import pokemon_logo from '../../assets/images/pokemon_logo.svg';
 import version from '../../assets/images/version.png';
 
 interface Props {
-  setGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
+  setGameStart: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const HomePage = ({ setGameStarted }: Props) => {
+const HomePage = ({ setGameStart }: Props) => {
   return (
     <div className="h-screen w-screen bg-black">
       <section className="item-center container flex flex-col gap-10 pt-[5%] text-center text-white">
@@ -26,12 +27,11 @@ const HomePage = ({ setGameStarted }: Props) => {
             {/* lower part */}
             <div className="h-[47%] rounded-b-full bg-white"></div>
           </div>
-
+          {/* logo */}
           <div className="mx-auto w-[500px]">
             <img src={pokemon_logo} alt="pokemon-logo" className="w-full" />
             <img src={version} className="mx-auto w-[300px]" />
           </div>
-
           {/* pokeball */}
           <div className="aspect-square h-24 animate-spin-slow rounded-full">
             {/* upper part */}
@@ -49,14 +49,14 @@ const HomePage = ({ setGameStarted }: Props) => {
           </div>
         </div>
         <button
-          onClick={() => setGameStarted(true)}
+          onClick={() => setGameStart(true)}
           className="hover:glowing mx-auto mt-10 w-fit rounded-lg px-6 py-2 text-5xl font-semibold"
         >
-          START GAME
+          START
         </button>
       </section>
     </div>
   );
 };
 
-export default HomePage;
+export default memo(HomePage);

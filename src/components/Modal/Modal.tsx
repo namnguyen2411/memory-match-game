@@ -1,12 +1,10 @@
-import { memo } from 'react';
-
 interface Props {
   score: number;
   timeLeft: number;
   isGamePaused: boolean;
   setGamePause: React.Dispatch<React.SetStateAction<boolean>>;
   handlePlayAgain: () => void;
-  setGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
+  handleQuitGame: () => void;
 }
 
 const Modal = ({
@@ -15,27 +13,28 @@ const Modal = ({
   isGamePaused,
   setGamePause,
   handlePlayAgain,
-  setGameStarted,
+  handleQuitGame,
 }: Props) => {
+  console.log('Modal');
   return (
     <div className="fixed left-0 top-0 h-screen w-screen backdrop-blur-[1px]">
       <div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-black p-10 font-bold text-white">
         <div className="flex h-full flex-col justify-around">
           <p>
-            POINTS <span className="float-right">{score}</span>
+            POINTS <span className="glowing float-right">{score}</span>
           </p>
           <p>
-            TIME LEFT <span className="float-right">{timeLeft}</span>
+            TIME LEFT <span className="glowing float-right">{timeLeft}</span>
           </p>
-          <p className="glowing">
-            TOTAL
-            <span className="float-right">{timeLeft + score}</span>
+          <p className={`${timeLeft !== 0 ? 'hidden' : 'block'} glowing`}>
+            TOTAL POINTS
+            <span className="glowing float-right">{timeLeft + score}</span>
           </p>
           <div className="item-center flex justify-between text-lg">
             {isGamePaused ? (
               <button
                 onClick={() => setGamePause(false)}
-                className="mx-auto cursor-pointer rounded-2xl border-2 bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
+                className="hover:glowing mx-auto rounded-2xl bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
               >
                 Resume
               </button>
@@ -43,16 +42,13 @@ const Modal = ({
               <>
                 <button
                   onClick={handlePlayAgain}
-                  className="cursor-pointer rounded-2xl border-2 bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
+                  className="hover:glowing rounded-2xl bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
                 >
                   Play Again
                 </button>
                 <button
-                  onClick={() => {
-                    handlePlayAgain();
-                    setGameStarted(false);
-                  }}
-                  className="cursor-pointer rounded-2xl border-2 bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
+                  onClick={handleQuitGame}
+                  className="hover:glowing rounded-2xl bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
                 >
                   Quit Game
                 </button>
@@ -65,4 +61,4 @@ const Modal = ({
   );
 };
 
-export default memo(Modal);
+export default Modal;

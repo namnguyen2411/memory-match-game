@@ -1,10 +1,10 @@
 import { memo } from 'react';
-import { Pokemon, CardInfo } from '@/interface';
+import { Pokemon, PokeBallArrayInfo } from '@/interface';
 interface Props {
   pokemon: Pokemon;
   index: number;
-  SelectedBalls: CardInfo;
-  addSelectedCard: ({
+  SelectedBalls: PokeBallArrayInfo;
+  checkBallIndex: ({
     pokemonId,
     index,
   }: {
@@ -12,16 +12,14 @@ interface Props {
     index: number;
   }) => void;
   correctPairs: number[][];
-  handleTransitionEnd: () => void;
 }
 
 const PokeBall = ({
   pokemon,
   SelectedBalls,
-  addSelectedCard,
+  checkBallIndex,
   index,
   correctPairs,
-  handleTransitionEnd,
 }: Props) => {
   const { id, name, image } = pokemon;
 
@@ -29,7 +27,7 @@ const PokeBall = ({
     <div
       className="pokeball relative col-span-1 aspect-square h-[110px] cursor-pointer rounded-full"
       onClick={() => {
-        addSelectedCard({ pokemonId: id, index });
+        checkBallIndex({ pokemonId: id, index });
       }}
     >
       <img
@@ -48,7 +46,6 @@ const PokeBall = ({
         className={`z-10 flex h-[47%] items-end justify-center rounded-t-full bg-red600 transition duration-300${
           correctPairs.flat().includes(index) ? ' animate-fade' : ''
         }`}
-        onTransitionEnd={handleTransitionEnd}
         style={{
           transform: SelectedBalls.index.includes(index)
             ? 'translateY(-80%)'

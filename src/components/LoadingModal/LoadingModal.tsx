@@ -1,13 +1,7 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import loading_indicator from '../../assets/images/loading_indicator.svg';
 
 export default memo(function LoadingModal() {
-  useEffect(() => {
-    const timeOut = setTimeout(() => {}, 250);
-
-    return () => clearTimeout(timeOut);
-  }, []);
-
   console.log('LoadingModal');
   return (
     <div className="fixed left-0 top-0 h-screen w-screen bg-slate300 backdrop-blur-[1px]">
