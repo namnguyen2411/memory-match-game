@@ -9,7 +9,9 @@ interface KeyboardEvent {
 }
 
 const App = () => {
-  const NUMBER_OF_PAIR = 9;
+  const NUMBER_OF_PAIR = 10;
+  const A_POINT = 10;
+  const MAX_POINTS_BALLS = NUMBER_OF_PAIR * A_POINT;
   const INITIAL_TIME = 90;
   const INITIAL_POKEBALL_INFO: PokeBallArrayInfo = {
     pokemonId: [],
@@ -23,11 +25,11 @@ const App = () => {
     INITIAL_POKEBALL_INFO,
   );
   const [correctPairs, setCorrectPairs] = useState<number[][]>([]);
-  const [score, setScore] = useState(0);
+  const [points, setPoints] = useState(0);
   const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
   const [newGame, setNewGame] = useState(0);
 
-  const gameEnded: boolean = score === NUMBER_OF_PAIR || timeLeft === 0;
+  const gameEnded: boolean = points === MAX_POINTS_BALLS || timeLeft === 0;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -115,7 +117,7 @@ const App = () => {
         pokemonId[pokemonId.length - 1] === pokemonId[pokemonId.length - 2] &&
         index[index.length - 1] !== index[index.length - 2]
       ) {
-        setScore((preScore) => preScore + 1);
+        setPoints((preScore) => preScore + A_POINT);
         setCorrectPairs((prePairs) => [
           ...prePairs,
           [index[index.length - 1], index[index.length - 2]],
@@ -128,7 +130,13 @@ const App = () => {
   }, [SelectedBalls]);
 
   // check if user open a pokeball with same index, if not add it to SelectedBalls
-  const checkBallIndex = useCallback(
+  const checkBallIndex: ({
+    pokemonId,
+    index,
+  }: {
+    pokemonId: number;
+    index: number;
+  }) => void = useCallback(
     ({ pokemonId, index }: { pokemonId: number; index: number }) => {
       if (SelectedBalls.index.includes(index)) return;
       setSelectedBalls((preCards) => {
@@ -141,16 +149,16 @@ const App = () => {
     [SelectedBalls],
   );
 
-  const handlePlayAgain = useCallback(() => {
+  const handlePlayAgain = useCallback((): void => {
     setPokemonList([]);
     setSelectedBalls(INITIAL_POKEBALL_INFO);
     setTimeLeft(INITIAL_TIME);
-    setScore(0);
+    setPoints(0);
     setCorrectPairs([]);
     setNewGame((pre) => pre + 1);
   }, []);
 
-  const handleQuitGame = useCallback(() => {
+  const handleQuitGame = useCallback((): void => {
     handlePlayAgain();
     setGameStart(false);
   }, []);
@@ -178,12 +186,14 @@ const App = () => {
               </section>
               {(isGamePaused || gameEnded) && (
                 <Modal
-                  score={score}
+                  INITIAL_TIME={INITIAL_TIME}
+                  points={points}
                   timeLeft={timeLeft}
                   isGamePaused={isGamePaused}
                   setGamePause={setGamePause}
                   handlePlayAgain={handlePlayAgain}
                   handleQuitGame={handleQuitGame}
+                  gameEnded={gameEnded}
                 />
               )}
             </div>

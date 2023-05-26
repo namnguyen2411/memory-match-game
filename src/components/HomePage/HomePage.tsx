@@ -3,7 +3,7 @@ import pokemon_logo from '../../assets/images/pokemon_logo.svg';
 import version from '../../assets/images/version.png';
 
 interface Props {
-  setGameStart: React.Dispatch<React.SetStateAction<boolean>>;
+  setGameStart(val: boolean): void;
 }
 
 const HomePage = ({ setGameStart }: Props) => {

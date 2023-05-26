@@ -40,6 +40,7 @@ const PokeBall = ({
               ? 1
               : 0,
         }}
+        draggable={false}
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition duration-300"
       />
       <div
