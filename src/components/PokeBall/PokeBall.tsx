@@ -1,9 +1,9 @@
 import { memo } from 'react';
-import { Pokemon, PokeBallArrayInfo } from '@/interface';
+import { Pokemon, PokeBallInfoArray } from '@/interface';
 interface Props {
   pokemon: Pokemon;
   index: number;
-  SelectedBalls: PokeBallArrayInfo;
+  SelectedBalls: PokeBallInfoArray;
   checkBallIndex: ({
     pokemonId,
     index,

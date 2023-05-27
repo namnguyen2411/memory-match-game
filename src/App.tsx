@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { HomePage, PokeBall, TimeBar, Modal, LoadingModal } from './components';
-import { Pokemon, PokeBallArrayInfo } from './interface';
+import { Pokemon, PokeBallInfoArray } from './interface';
 
 interface KeyboardEvent {
   key: string;
@@ -10,26 +10,26 @@ interface KeyboardEvent {
 
 const App = () => {
   const NUMBER_OF_PAIR = 10;
-  const A_POINT = 10;
-  const MAX_POINTS_BALLS = NUMBER_OF_PAIR * A_POINT;
-  const INITIAL_TIME = 90;
-  const INITIAL_POKEBALL_INFO: PokeBallArrayInfo = {
+  const POINTS_FOR_A_PAIR = 10;
+  const POINTS_FOR_MAX_PAIRS = NUMBER_OF_PAIR * POINTS_FOR_A_PAIR;
+  const INIT_TIME = 90;
+  const INIT_POKEBALL_INFO: PokeBallInfoArray = {
     pokemonId: [],
     index: [],
   };
 
-  const [isGameStarted, setGameStart] = useState(false);
-  const [isGamePaused, setGamePause] = useState(false);
+  const [gameStart, setGameStart] = useState(false);
+  const [gamePause, setGamePause] = useState(false);
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
-  const [SelectedBalls, setSelectedBalls] = useState<PokeBallArrayInfo>(
-    INITIAL_POKEBALL_INFO,
+  const [SelectedBalls, setSelectedBalls] = useState<PokeBallInfoArray>(
+    INIT_POKEBALL_INFO,
   );
   const [correctPairs, setCorrectPairs] = useState<number[][]>([]);
   const [points, setPoints] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
+  const [timeLeft, setTimeLeft] = useState(INIT_TIME);
   const [newGame, setNewGame] = useState(0);
 
-  const gameEnded: boolean = points === MAX_POINTS_BALLS || timeLeft === 0;
+  const gameEnd: boolean = points === POINTS_FOR_MAX_PAIRS || timeLeft === 0;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -66,24 +66,24 @@ const App = () => {
   // duplicate current pokemonList to create pairs and switch their index
   useEffect(() => {
     if (pokemonList.length === NUMBER_OF_PAIR) {
-      let duplicatedPokemonList: Pokemon[] = [];
-      let changedIndexPokemonList: Pokemon[] = [];
-      duplicatedPokemonList = [...pokemonList, ...pokemonList];
+      let duplicatedList: Pokemon[] = [];
+      let changedIndexList: Pokemon[] = [];
+      duplicatedList = [...pokemonList, ...pokemonList];
 
-      while (duplicatedPokemonList.length !== 0) {
+      while (duplicatedList.length !== 0) {
         const startIndex = Math.floor(
-          Math.random() * duplicatedPokemonList.length,
+          Math.random() * duplicatedList.length,
         );
-        changedIndexPokemonList.push(
-          duplicatedPokemonList.splice(startIndex, 1)[0],
+        changedIndexList.push(
+          duplicatedList.splice(startIndex, 1)[0],
         );
       }
-      setPokemonList(changedIndexPokemonList);
+      setPokemonList(changedIndexList);
     }
   }, [pokemonList]);
 
   useEffect(() => {
-    if (isGameStarted) {
+    if (gameStart) {
       // countdown timer
       const interval = setInterval(() => {
         setTimeLeft((preTimeLeft) => {
@@ -92,11 +92,11 @@ const App = () => {
           return 0;
         });
       }, 1000);
-      if (gameEnded || isGamePaused) clearInterval(interval);
+      if (gameEnd || gamePause) clearInterval(interval);
       // pause game when user press ESC
       const handler = (e: KeyboardEvent) => {
-        if (e.key !== 'Escape' || gameEnded) return;
-        setGamePause(!isGamePaused);
+        if (e.key !== 'Escape' || gameEnd) return;
+        setGamePause(!gamePause);
       };
       document.addEventListener('keyup', handler);
 
@@ -105,7 +105,7 @@ const App = () => {
         document.removeEventListener('keyup', handler);
       };
     }
-  }, [isGameStarted, isGamePaused, gameEnded]);
+  }, [gameStart, gamePause, gameEnd]);
 
   // wait 100ms after the pokeball animation end (300ms) then compare 2 pokeballs
   useEffect(() => {
@@ -117,13 +117,13 @@ const App = () => {
         pokemonId[pokemonId.length - 1] === pokemonId[pokemonId.length - 2] &&
         index[index.length - 1] !== index[index.length - 2]
       ) {
-        setPoints((preScore) => preScore + A_POINT);
+        setPoints((preScore) => preScore + POINTS_FOR_A_PAIR);
         setCorrectPairs((prePairs) => [
           ...prePairs,
           [index[index.length - 1], index[index.length - 2]],
         ]);
       }
-      setSelectedBalls(INITIAL_POKEBALL_INFO);
+      setSelectedBalls(INIT_POKEBALL_INFO);
     }, 400);
 
     return () => clearTimeout(timerId);
@@ -151,8 +151,8 @@ const App = () => {
 
   const handlePlayAgain = useCallback((): void => {
     setPokemonList([]);
-    setSelectedBalls(INITIAL_POKEBALL_INFO);
-    setTimeLeft(INITIAL_TIME);
+    setSelectedBalls(INIT_POKEBALL_INFO);
+    setTimeLeft(INIT_TIME);
     setPoints(0);
     setCorrectPairs([]);
     setNewGame((pre) => pre + 1);
@@ -165,12 +165,12 @@ const App = () => {
 
   return (
     <div className="relative bg-slate300">
-      {isGameStarted ? (
+      {gameStart ? (
         <>
           {pokemonList.length === NUMBER_OF_PAIR * 2 ? (
             <div className="container">
               <TimeBar timeLeft={timeLeft} />
-              <section className="mt-16 pb-10">
+              <section className="mt-14 pb-10">
                 <div className="grid grid-cols-5 place-items-center gap-[90px]">
                   {pokemonList.map((pokemon: Pokemon, index) => (
                     <PokeBall
@@ -184,16 +184,16 @@ const App = () => {
                   ))}
                 </div>
               </section>
-              {(isGamePaused || gameEnded) && (
+              {(gamePause || gameEnd) && (
                 <Modal
-                  INITIAL_TIME={INITIAL_TIME}
+                  INITIAL_TIME={INIT_TIME}
                   points={points}
                   timeLeft={timeLeft}
-                  isGamePaused={isGamePaused}
+                  gamePause={gamePause}
                   setGamePause={setGamePause}
                   handlePlayAgain={handlePlayAgain}
                   handleQuitGame={handleQuitGame}
-                  gameEnded={gameEnded}
+                  gameEnd={gameEnd}
                 />
               )}
             </div>

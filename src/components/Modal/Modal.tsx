@@ -3,22 +3,22 @@ interface Props {
   INITIAL_TIME: number;
   points: number;
   timeLeft: number;
-  isGamePaused: boolean;
+  gamePause: boolean;
   setGamePause(val: boolean): void;
   handlePlayAgain: () => void;
   handleQuitGame: () => void;
-  gameEnded: boolean;
+  gameEnd: boolean;
 }
 
 const Modal = ({
   INITIAL_TIME,
   points,
   timeLeft,
-  isGamePaused,
+  gamePause,
   setGamePause,
   handlePlayAgain,
   handleQuitGame,
-  gameEnded,
+  gameEnd,
 }: Props) => {
   const countUpPointsRef = useRef<HTMLInputElement>(null!);
   const countdownTimeRef = useRef<HTMLInputElement>(null!);
@@ -47,7 +47,7 @@ const Modal = ({
   };
 
   useEffect(() => {
-    if (!gameEnded) return;
+    if (!gameEnd) return;
 
     (async () => {
       await timeout(500);
@@ -57,7 +57,7 @@ const Modal = ({
       await timeout(1500);
       initCount(countUpTotalRef, 0, timeLeft * 2 + points);
     })();
-  }, [gameEnded]);
+  }, [gameEnd]);
 
   return (
     <div className="fixed left-0 top-0 h-screen w-screen backdrop-blur-[1px]">
@@ -66,23 +66,23 @@ const Modal = ({
           <p>
             POINTS{' '}
             <span className="float-right" ref={countUpPointsRef}>
-              {gameEnded ? 0 : points}
+              {gameEnd ? 0 : points}
             </span>
           </p>
           <p>
             TIME LEFT{' '}
             <span className="float-right" ref={countdownTimeRef}>
-              {gameEnded ? INITIAL_TIME : timeLeft}
+              {gameEnd ? INITIAL_TIME : timeLeft}
             </span>
           </p>
-          <p className={`${gameEnded ? '' : 'hidden'} glowing`}>
+          <p className={`${gameEnd ? '' : 'hidden'} glowing`}>
             TOTAL
             <span className="glowing float-right" ref={countUpTotalRef}>
               0
             </span>
           </p>
           <div className="item-center flex justify-between text-lg">
-            {isGamePaused ? (
+            {gamePause ? (
               <button
                 onClick={() => setGamePause(false)}
                 className="hover:glowing mx-auto rounded-2xl bg-white px-4 py-2 text-red600 shadow-sm shadow-white"

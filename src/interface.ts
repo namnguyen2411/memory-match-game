@@ -4,7 +4,7 @@ export interface Pokemon {
   image: string;
 }
 
-export interface PokeBallArrayInfo {
+export interface PokeBallInfoArray {
   pokemonId: number[];
   index: number[];
 }
