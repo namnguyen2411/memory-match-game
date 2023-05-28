@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin');
+
 module.exports = {
   content: ['index.html', './src/**/*.{js,jsx,ts,tsx,vue,html}'],
   theme: {
@@ -16,12 +18,28 @@ module.exports = {
           '50%': { opacity: 0.5 },
           '100%': { opacity: 0 },
         },
+        timebar: {
+          '0%': { right: '0%' },
+          '100%': { right: '100%' },
+        },
       },
       animation: {
         'spin-slow': 'spin 2s linear infinite',
         fade: 'fade .2s linear forwards',
+        timebar: 'timebar 1s linear forwards',
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          'animation-duration': (value) => ({
+            animationDuration: value,
+          }),
+        },
+        { values: theme('animationDuration') },
+      );
+    }),
+  ],
 };

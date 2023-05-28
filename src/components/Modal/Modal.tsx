@@ -24,37 +24,38 @@ const Modal = ({
   const countdownTimeRef = useRef<HTMLInputElement>(null!);
   const countUpTotalRef = useRef<HTMLInputElement>(null!);
 
-  const initCount = async (
-    target: React.MutableRefObject<HTMLInputElement>,
-    startVal: number,
-    endVal: number,
-  ) => {
-    const countUpModule = await import('countup.js');
-    const count = new countUpModule.CountUp(target.current, endVal, {
-      startVal,
-    });
-    if (!count.error) {
-      count.start();
-    } else {
-      console.error(count.error);
-    }
-  };
-
-  const timeout = (waitTime: number) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, waitTime);
-    });
-  };
-
   useEffect(() => {
     if (!gameEnd) return;
+
+    const initCount = async (
+      target: React.MutableRefObject<HTMLInputElement>,
+      startVal: number,
+      endVal: number,
+    ) => {
+      const countUpModule = await import('countup.js');
+      const count = new countUpModule.CountUp(target.current, endVal, {
+        startVal,
+        duration: 1,
+      });
+      if (!count.error) {
+        count.start();
+      } else {
+        console.error(count.error);
+      }
+    };
+
+    const timeout = (waitTime: number) => {
+      return new Promise((resolve) => {
+        setTimeout(resolve, waitTime);
+      });
+    };
 
     (async () => {
       await timeout(500);
       initCount(countUpPointsRef, 0, points);
-      await timeout(1500);
+      await timeout(1000);
       initCount(countdownTimeRef, INITIAL_TIME, timeLeft);
-      await timeout(1500);
+      await timeout(1000);
       initCount(countUpTotalRef, 0, timeLeft * 2 + points);
     })();
   }, [gameEnd]);

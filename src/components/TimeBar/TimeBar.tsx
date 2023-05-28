@@ -1,16 +1,17 @@
 interface Props {
-  timeLeft: number;
+  INIT_TIME: number;
+  gamePause: boolean;
 }
 
-export default function TimeBar({ timeLeft }: Props) {
+export default function TimeBar({ INIT_TIME, gamePause }: Props) {
   return (
     <section>
-      <div className="flex items-center justify-evenly gap-40 text-white">
-        <div className="item-center flex min-w-[165px] rounded-2xl bg-black px-4 py-2 font-bold">
-          <p>
-            TIME <span className="ml-10 text-cyan400">{timeLeft} s</span>
-          </p>
-        </div>
+      <div className="relative mx-auto h-8 w-4/5 overflow-hidden rounded-full border-4 border-black">
+        <span
+          className={`absolute inset-0 animate-timebar rounded-full bg-cyan400 animation-duration-[${INIT_TIME}s] ${
+            gamePause ? 'pause' : ''
+          }`}
+        />
       </div>
     </section>
   );
