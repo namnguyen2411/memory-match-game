@@ -31,15 +31,25 @@ module.exports = {
     },
   },
   plugins: [
-    plugin(function ({ matchUtilities, theme }) {
-      matchUtilities(
-        {
-          'animation-duration': (value) => ({
-            animationDuration: value,
-          }),
+    plugin(
+      function ({ matchUtilities, theme }) {
+        matchUtilities(
+          {
+            'animation-duration': (value) => ({
+              animationDuration: value,
+            }),
+          },
+          { values: theme('animationDuration') },
+        );
+      },
+      {
+        theme: {
+          animationDuration: {
+            10: '10s',
+            30: '30s',
+          },
         },
-        { values: theme('animationDuration') },
-      );
-    }),
+      },
+    ),
   ],
 };

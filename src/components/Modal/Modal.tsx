@@ -51,11 +51,11 @@ const Modal = ({
     };
 
     (async () => {
-      await timeout(500);
+      await timeout(1000);
       initCount(countUpPointsRef, 0, points);
-      await timeout(1000);
+      await timeout(1200);
       initCount(countdownTimeRef, INITIAL_TIME, timeLeft);
-      await timeout(1000);
+      await timeout(1200);
       initCount(countUpTotalRef, 0, timeLeft * 2 + points);
     })();
   }, [gameEnd]);

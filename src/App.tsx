@@ -13,6 +13,7 @@ const App = () => {
   const POINTS_FOR_A_PAIR = 10;
   const POINTS_FOR_MAX_PAIRS = NUMBER_OF_PAIR * POINTS_FOR_A_PAIR;
   const INIT_TIME = 60;
+  // or 90 because it value need to match animationDurationVariants variable in Timebar components
   const INIT_POKEBALL_INFO: PokeBallInfoArray = {
     pokemonId: [],
     index: [],
@@ -163,7 +164,11 @@ const App = () => {
         <>
           {pokemonList.length === NUMBER_OF_PAIR * 2 ? (
             <div className="container">
-              <TimeBar INIT_TIME={INIT_TIME} gamePause={gamePause} />
+              <TimeBar
+                INIT_TIME={INIT_TIME}
+                gamePause={gamePause}
+                gameEnd={gameEnd}
+              />
               <section className="mt-14 pb-10">
                 <div className="grid grid-cols-5 place-items-center gap-[90px]">
                   {pokemonList.map((pokemon: Pokemon, index) => (
