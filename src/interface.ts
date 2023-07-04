@@ -1,10 +1,10 @@
 export interface Pokemon {
-  id: number;
-  name: string;
-  image: string;
+  id: number
+  name: string
+  image: string
 }
 
 export interface PokeBallInfoArray {
-  pokemonId: number[];
-  index: number[];
+  pokemonId: number[]
+  index: number[]
 }

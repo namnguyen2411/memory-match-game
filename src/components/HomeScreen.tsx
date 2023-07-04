@@ -1,12 +1,11 @@
-import { memo } from 'react';
-import pokemon_logo from '../../assets/images/pokemon_logo.svg';
-import version from '../../assets/images/version.png';
+import pokemon_logo from '../assets/images/pokemon_logo.svg'
+import version from '../assets/images/version.png'
 
 interface Props {
-  setGameStart(val: boolean): void;
+  setGameStart(val: boolean): void
 }
 
-const HomePage = ({ setGameStart }: Props) => {
+export default function HomeScreen({ setGameStart }: Props) {
   return (
     <div className="h-screen w-screen bg-black">
       <section className="item-center container flex flex-col gap-10 pt-[5%] text-center text-white">
@@ -56,7 +55,5 @@ const HomePage = ({ setGameStart }: Props) => {
         </button>
       </section>
     </div>
-  );
-};
-
-export default memo(HomePage);
+  )
+}

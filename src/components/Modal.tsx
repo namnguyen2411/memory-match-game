@@ -1,13 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react'
+
 interface Props {
-  INITIAL_TIME: number;
-  points: number;
-  timeLeft: number;
-  gamePause: boolean;
-  setGamePause(val: boolean): void;
-  handlePlayAgain: () => void;
-  handleQuitGame: () => void;
-  gameEnd: boolean;
+  INITIAL_TIME: number
+  points: number
+  timeLeft: number
+  gamePause: boolean
+  setGamePause(val: boolean): void
+  handlePlayAgain: () => void
+  handleQuitGame: () => void
+  gameEnd: boolean
 }
 
 const Modal = ({
@@ -18,47 +19,43 @@ const Modal = ({
   setGamePause,
   handlePlayAgain,
   handleQuitGame,
-  gameEnd,
+  gameEnd
 }: Props) => {
-  const countUpPointsRef = useRef<HTMLInputElement>(null!);
-  const countdownTimeRef = useRef<HTMLInputElement>(null!);
-  const countUpTotalRef = useRef<HTMLInputElement>(null!);
+  const countUpPointsRef = useRef<HTMLInputElement>(null!)
+  const countdownTimeRef = useRef<HTMLInputElement>(null!)
+  const countUpTotalRef = useRef<HTMLInputElement>(null!)
 
   useEffect(() => {
-    if (!gameEnd) return;
+    if (!gameEnd) return
 
-    const initCount = async (
-      target: React.MutableRefObject<HTMLInputElement>,
-      startVal: number,
-      endVal: number,
-    ) => {
-      const countUpModule = await import('countup.js');
+    const initCount = async (target: React.MutableRefObject<HTMLInputElement>, startVal: number, endVal: number) => {
+      const countUpModule = await import('countup.js')
       const count = new countUpModule.CountUp(target.current, endVal, {
         startVal,
-        duration: 1,
-      });
+        duration: 1
+      })
       if (!count.error) {
-        count.start();
+        count.start()
       } else {
-        console.error(count.error);
+        console.error(count.error)
       }
-    };
+    }
 
     const timeout = (waitTime: number) => {
       return new Promise((resolve) => {
-        setTimeout(resolve, waitTime);
-      });
-    };
+        setTimeout(resolve, waitTime)
+      })
+    }
 
-    (async () => {
-      await timeout(1000);
-      initCount(countUpPointsRef, 0, points);
-      await timeout(1200);
-      initCount(countdownTimeRef, INITIAL_TIME, timeLeft);
-      await timeout(1200);
-      initCount(countUpTotalRef, 0, timeLeft * 2 + points);
-    })();
-  }, [gameEnd]);
+    ;(async () => {
+      await timeout(1000)
+      initCount(countUpPointsRef, 0, points)
+      await timeout(1200)
+      initCount(countdownTimeRef, INITIAL_TIME, timeLeft)
+      await timeout(1200)
+      initCount(countUpTotalRef, 0, timeLeft * 2 + points)
+    })()
+  }, [gameEnd, INITIAL_TIME, points, timeLeft])
 
   return (
     <div className="fixed left-0 top-0 h-screen w-screen backdrop-blur-[1px]">
@@ -86,7 +83,7 @@ const Modal = ({
             {gamePause ? (
               <button
                 onClick={() => setGamePause(false)}
-                className="hover:glowing mx-auto rounded-2xl bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
+                className="mx-auto rounded-2xl bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
               >
                 Resume
               </button>
@@ -94,13 +91,13 @@ const Modal = ({
               <>
                 <button
                   onClick={handlePlayAgain}
-                  className="hover:glowing rounded-2xl bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
+                  className="rounded-2xl bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
                 >
                   Play Again
                 </button>
                 <button
                   onClick={handleQuitGame}
-                  className="hover:glowing rounded-2xl bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
+                  className="rounded-2xl bg-white px-4 py-2 text-red600 shadow-sm shadow-white"
                 >
                   Quit Game
                 </button>
@@ -110,7 +107,7 @@ const Modal = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Modal;
+export default Modal
